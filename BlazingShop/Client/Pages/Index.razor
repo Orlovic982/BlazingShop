@@ -1,0 +1,41 @@
+﻿@page "/"
+@page "/{categoryurl}"
+@inject ICategoryService CategoryS;
+@inject IProductService ProductService
+
+@if (category != null)
+{
+    <h1> Welcome to @category.Name section </h1>
+    <ProducList />
+}
+else
+{
+<h1>Welcome to Blazing Shop</h1>
+<ProducList></ProducList>
+}
+
+@code{
+    [Parameter]
+    public string  CategoryUrl { get; set; }
+
+    private Category category = null;
+    
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await ProductService.LoadProducts(CategoryUrl);
+
+
+        if (CategoryUrl != null)
+        {
+            category = CategoryS.Categories.FirstOrDefault(c => c.Url.ToLower().Equals(CategoryUrl.ToLower()));
+
+        }
+        else
+        {
+            category = null;
+        }
+
+    }
+
+}
